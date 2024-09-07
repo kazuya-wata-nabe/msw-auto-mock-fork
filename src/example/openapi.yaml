@@ -1,0 +1,251 @@
+openapi: 3.0.0
+info:
+  title: Sample API
+  version: 0.0.0
+tags:
+  - name: User
+  - name: Review
+paths:
+  /me:
+    get:
+      tags:
+        - User
+      responses:
+        "200":
+          $ref: "#/components/responses/Me"
+        "401":
+          description: ""
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Error"
+
+  /reviews:
+    get:
+      summary: /reviews
+      description: |
+        映画のレビューを一覧で返却します
+        - ソート順はpostDateの降順
+        - titleが設定されている場合は部分一致したレビューを返却
+      tags:
+        - Review
+      parameters:
+        - $ref: "#/components/parameters/ReviewListQuery"
+      responses:
+        "200":
+          $ref: "#/components/responses/ReviewListResponse"
+        "400":
+          description: The server could not understand the request due to invalid syntax.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Error"
+    post:
+      tags:
+        - Review
+      responses:
+        "201":
+          description: ""
+        "400":
+          description: ""
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Error"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/Review"
+  /reviews/{id}:
+    put:
+      tags:
+        - Review
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          $ref: "#/components/responses/ReviewResponse"
+        "400":
+          description: ""
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Error"
+        "404":
+          description: ""
+          $ref: "#/components/responses/NotFoundErrorResponse"
+
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/Review"
+    delete:
+      tags:
+        - Review
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        "204":
+          description: ""
+        "404":
+          $ref: "#/components/responses/NotFoundErrorResponse"
+
+components:
+  parameters:
+    ReviewListQuery:
+      name: title
+      in: query
+      required: false
+      schema:
+        type: string
+  schemas:
+    Error:
+      type: object
+      required:
+        - code
+        - field
+        - message
+      properties:
+        code:
+          type: string
+        field:
+          type: string
+        message:
+          type: string
+    NotFoundError:
+      type: string
+      enum:
+        - NotFound
+      default: NotFound
+    UserRole:
+      type: string
+      description: |
+
+        * ADMIN - 管理者
+        * COMMON - 一般ユーザ
+      enum:
+        - ADMIN
+        - COMMON
+    Me:
+      type: object
+      properties:
+        name:
+          default: ""
+          type: string
+          description: sample
+        userRole:
+          default: ""
+          $ref: "#/components/schemas/UserRole"
+    Review:
+      type: object
+      required:
+        - title
+        - content
+      properties:
+        title:
+          type: string
+          default: "sample"
+        content:
+          type: string
+          minLength: 1
+          maxLength: 100
+        postDate:
+          type: string
+          format: date
+    WithId:
+      type: object
+      required:
+        - id
+      properties:
+        id:
+          type: string
+
+  responses:
+    Me:
+      description: ""
+      content:
+        "application/json":
+          schema:
+            $ref: "#/components/schemas/Me"
+          examples:
+            default:
+              $ref: "#/components/examples/Me"
+
+    ReviewListResponse:
+      description: ""
+      content:
+        "application/json":
+          schema:
+            type: array
+            items:
+              type: object
+              required:
+                - id
+              allOf:
+                - $ref: "#/components/schemas/WithId"
+                - $ref: "#/components/schemas/Review"
+          examples:
+            default:
+              $ref: "#/components/examples/ReviewListResponse"
+
+    ReviewResponse:
+      description: ""
+      content:
+        "application/json":
+          schema:
+            type: object
+            required:
+              - id
+            allOf:
+              - $ref: "#/components/schemas/WithId"
+              - $ref: "#/components/schemas/Review"
+          examples:
+            default:
+              $ref: "#/components/examples/ReviewResponse"
+
+    NotFoundErrorResponse:
+      description: ""
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/NotFoundError"
+
+  examples:
+    ReviewListResponse:
+      value:
+        - id: "1"
+          title: "レビューのタイトル"
+          content: "レビュー内容"
+          postDate: "2024-06-13"
+
+    ReviewResponse:
+      value:
+        id: "1"
+        title: "title"
+        content: "content"
+        postDate: "2024-06-13"
+
+    Me:
+      value:
+        name: "name"
+        userRole: "ADMIN"
