@@ -1,9 +1,13 @@
 {
   "compilerOptions": {
+    "rootDir": "src",
+    "outDir": "./bin",
     "baseUrl": ".",
     "module": "ESNext",
     "target": "esnext",
-    "lib": ["ESNext"],
+    "lib": [
+      "ESNext"
+    ],
     "esModuleInterop": true,
     "strict": true,
     "strictNullChecks": true,
@@ -12,7 +16,19 @@
     "skipLibCheck": true,
     "noUnusedParameters": true,
     "noUncheckedIndexedAccess": true,
-    "types": ["vitest/globals"]
+    "types": [
+      "vitest/globals"
+    ],
+    "paths": {
+      "@/*": [
+        "src/*"
+      ]
+    }
   },
-  "include": ["src"],
+  "exclude": [
+    "src/**/*.test.*"
+  ],
+  "include": [
+    "src"
+  ],
 }
