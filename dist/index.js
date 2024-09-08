@@ -2687,17 +2687,20 @@ var createOpCollection = ({ paths, components }) => {
     return { ...op2, example };
   });
 };
-var main = (doc2, outdir2) => {
-  const opCollection = createOpCollection(doc2);
-  const handlers = mockTemplate(opCollection, doc2.components.examples);
-  if (!outdir2) {
-    console.debug(handlers);
-    return;
-  }
+var write = (outdir2, handlers) => {
   if (!existsSync(outdir2)) {
     mkdirSync(outdir2);
   }
   writeFileSync(path.resolve(process.cwd(), `${outdir2}/handlers.ts`), handlers);
+};
+var main = (doc2, outdir2) => {
+  const opCollection = createOpCollection(doc2);
+  const handlers = mockTemplate(opCollection, doc2.components.examples);
+  if (outdir2) {
+    write(outdir2, handlers);
+  } else {
+    console.debug(handlers);
+  }
 };
 var [, , ...options] = process.argv;
 var { input, outdir } = parseOptions(options);
@@ -2711,4 +2714,3 @@ export {
 js-yaml/dist/js-yaml.mjs:
   (*! js-yaml 4.1.0 https://github.com/nodeca/js-yaml @license MIT *)
 */
-//# sourceMappingURL=index.js.map
