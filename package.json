@@ -4,7 +4,9 @@
   "description": "",
   "type": "module",
   "main": "index.js",
-  "bin": "bin/index.js",
+  "bin": {
+    "cli": "bin/index.js"
+  },
   "scripts": {
     "build": "tsup",
     "example": "tsx src example/openapi.yaml --outdir dist",
