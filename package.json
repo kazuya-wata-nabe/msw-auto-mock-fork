@@ -5,9 +5,8 @@
   "type": "module",
   "main": "index.js",
   "scripts": {
-    "gen:handlers": "tsx ./src/index.ts",
-    "pre:compile": "rm -r bin",
-    "compile": "tsup",
+    "build": "tsup",
+    "example": "tsx src example/openapi.yaml --outdir dist",
     "test": "vitest"
   },
   "devDependencies": {
@@ -15,7 +14,6 @@
     "@types/js-yaml": "^4.0.9",
     "@types/node": "^22.5.4",
     "js-yaml": "^4.1.0",
-    "openapi-typescript": "7.0.0",
     "tsup": "^8.2.4",
     "tsx": "^4.19.0",
     "typescript": "^5.5.4",
@@ -26,6 +24,5 @@
   "license": "MIT",
   "volta": {
     "node": "20.17.0"
-  },
-  "packageManager": "pnpm@9.6.0+sha512.38dc6fba8dba35b39340b9700112c2fe1e12f10b17134715a4aa98ccf7bb035e76fd981cf0bb384dfa98f8d6af5481c2bef2f4266a24bfa20c34eb7147ce0b5e"
+  }
 }

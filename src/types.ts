@@ -1,6 +1,6 @@
 export type Options = {
 	input: string
-	output?: string
+	outdir?: string
 }
 // TODO: 適当な定義なので後で修正
 export type OpenAPI = {

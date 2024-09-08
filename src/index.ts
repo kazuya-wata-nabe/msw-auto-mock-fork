@@ -1,4 +1,10 @@
-import { readFileSync, writeFileSync } from "node:fs"
+import {
+	existsSync,
+	mkdir,
+	mkdirSync,
+	readFileSync,
+	writeFileSync,
+} from "node:fs"
 import * as path from "node:path"
 import { load } from "js-yaml"
 import { mockTemplate } from "./template"
@@ -60,20 +66,24 @@ const createOpCollection = ({ paths, components }: OpenAPI) => {
 	})
 }
 
-export const main = (doc: OpenAPI, output?: string) => {
+const write = (outdir: string, handlers: string) => {
+	if (!existsSync(outdir)) {
+		mkdirSync(outdir)
+	}
+	writeFileSync(path.resolve(process.cwd(), `${outdir}/handlers.ts`), handlers)
+}
+
+export const main = (doc: OpenAPI, outdir?: string) => {
 	const opCollection = createOpCollection(doc)
 	const handlers = mockTemplate(opCollection, doc.components.examples)
-	if (output) {
-		writeFileSync(
-			path.resolve(process.cwd(), `${output}/handlers.ts`),
-			handlers,
-		)
+	if (outdir) {
+		write(outdir, handlers)
 	} else {
 		console.debug(handlers)
 	}
 }
 
 const [, , ...options] = process.argv
-const { input, output } = parseOptions(options)
+const { input, outdir } = parseOptions(options)
 const doc = load(readFileSync(input, "utf8")) as OpenAPI
-main(doc, output)
+main(doc, outdir)
